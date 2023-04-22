@@ -18,7 +18,7 @@ for(let i = 100; i < games.length; i++){
 }
 gamePKs = Array.prototype.concat.apply([], gamePKs);
 var final = {};
-for(let i = 181; i < gamePKs.length; i++){
+for(let i = 0; i < gamePKs.length; i++){
     let response =  await axios.get(`https://statsapi.mlb.com/api/v1/game/${gamePKs[i]}/linescore`);
     let awayRunsAllowed = response.data.innings[0].home.runs;
     let homeRunsAllowed = response.data.innings[0].away.runs;
