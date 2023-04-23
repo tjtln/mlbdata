@@ -20,40 +20,42 @@ gamePKs = Array.prototype.concat.apply([], gamePKs);
 var final = {};
 for(let i = 0; i < gamePKs.length; i++){
     let response =  await axios.get(`https://statsapi.mlb.com/api/v1/game/${gamePKs[i]}/linescore`);
-    let awayRunsAllowed = response.data.innings[0].home.runs;
-    let homeRunsAllowed = response.data.innings[0].away.runs;
-    if(response.data.innings[0] && awayRunsAllowed && homeRunsAllowed){
+    if(response.data.innings[0]){
         let awayRunsAllowed = response.data.innings[0].home.runs;
         let homeRunsAllowed = response.data.innings[0].away.runs;
-        response = await axios.get(`https://statsapi.mlb.com/api/v1/game/${gamePKs[i]}/playByPlay`);
-        let plays = response.data.allPlays
-        if(plays.length > 0){
-            var homepitcher = plays[0].matchup.pitcher.fullName;
-            var awaypitcher;
-            let j = 0;
-            while(j < plays.length){
-                if(plays[j].about.isTopInning == false && plays[j].about.inning == 1){
-                    awaypitcher = plays[j].matchup.pitcher.fullName;
-                    break;
+        if(response.data.innings[0] && awayRunsAllowed && homeRunsAllowed){
+            let awayRunsAllowed = response.data.innings[0].home.runs;
+            let homeRunsAllowed = response.data.innings[0].away.runs;
+            response = await axios.get(`https://statsapi.mlb.com/api/v1/game/${gamePKs[i]}/playByPlay`);
+            let plays = response.data.allPlays
+            if(plays.length > 0){
+                var homepitcher = plays[0].matchup.pitcher.fullName;
+                var awaypitcher;
+                let j = 0;
+                while(j < plays.length){
+                    if(plays[j].about.isTopInning == false && plays[j].about.inning == 1){
+                        awaypitcher = plays[j].matchup.pitcher.fullName;
+                        break;
+                    }
+                    j++;
                 }
-                j++;
+                if(!final[homepitcher]){
+                    final[homepitcher] = {"runsAllowed": homeRunsAllowed, "innings": 1, "runsAllowedPerInning": homeRunsAllowed};
+                } else {
+                    final[homepitcher].runsAllowed += homeRunsAllowed;
+                    final[homepitcher].innings += 1;
+                    final[homepitcher].runsAllowedPerInning = final[homepitcher].runsAllowed / final[homepitcher].innings;
+                }
+                if(!final[awaypitcher]){
+                    final[awaypitcher] = {"runsAllowed": awayRunsAllowed, "innings": 1, "runsAllowedPerInning": awayRunsAllowed};
+                } else {
+                    final[awaypitcher].runsAllowed += awayRunsAllowed;
+                    final[awaypitcher].innings += 1;
+                    final[awaypitcher].runsAllowedPerInning = final[awaypitcher].runsAllowed / final[awaypitcher].innings;
+                }
             }
-            if(!final[homepitcher]){
-                final[homepitcher] = {"runsAllowed": homeRunsAllowed, "innings": 1, "runsAllowedPerInning": homeRunsAllowed};
-            } else {
-                final[homepitcher].runsAllowed += homeRunsAllowed;
-                final[homepitcher].innings += 1;
-                final[homepitcher].runsAllowedPerInning = final[homepitcher].runsAllowed / final[homepitcher].innings;
-            }
-            if(!final[awaypitcher]){
-                final[awaypitcher] = {"runsAllowed": awayRunsAllowed, "innings": 1, "runsAllowedPerInning": awayRunsAllowed};
-            } else {
-                final[awaypitcher].runsAllowed += awayRunsAllowed;
-                final[awaypitcher].innings += 1;
-                final[awaypitcher].runsAllowedPerInning = final[awaypitcher].runsAllowed / final[awaypitcher].innings;
-            }
-        }
-    } 
+        } 
+    }
     console.log(`${i} / ${gamePKs.length}`)
 }
 var rows = [];
