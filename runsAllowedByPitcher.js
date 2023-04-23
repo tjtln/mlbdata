@@ -21,8 +21,8 @@ var final = {};
 for(let i = 0; i < gamePKs.length; i++){
     let response =  await axios.get(`https://statsapi.mlb.com/api/v1/game/${gamePKs[i]}/linescore`);
     if(response.data.innings[0]){
-    let awayRunsAllowed = response.data.innings[0].home.runs;
-    let homeRunsAllowed = response.data.innings[0].away.runs;
+        let awayRunsAllowed = response.data.innings[0].home.runs;
+        let homeRunsAllowed = response.data.innings[0].away.runs;
         response = await axios.get(`https://statsapi.mlb.com/api/v1/game/${gamePKs[i]}/playByPlay`);
         let plays = response.data.allPlays
         if(plays.length > 0){
@@ -36,19 +36,21 @@ for(let i = 0; i < gamePKs.length; i++){
                 }
                 j++;
             }
-            if(!final[homepitcher]){
-                final[homepitcher] = {"runsAllowed": homeRunsAllowed, "innings": 1, "runsAllowedPerInning": homeRunsAllowed};
-            } else {
-                final[homepitcher].runsAllowed += homeRunsAllowed;
-                final[homepitcher].innings += 1;
-                final[homepitcher].runsAllowedPerInning = final[homepitcher].runsAllowed / final[homepitcher].innings;
-            }
-            if(!final[awaypitcher]){
-                final[awaypitcher] = {"runsAllowed": awayRunsAllowed, "innings": 1, "runsAllowedPerInning": awayRunsAllowed};
-            } else {
-                final[awaypitcher].runsAllowed += awayRunsAllowed;
-                final[awaypitcher].innings += 1;
-                final[awaypitcher].runsAllowedPerInning = final[awaypitcher].runsAllowed / final[awaypitcher].innings;
+            if(homeRunsAllowed != null && awayRunsAllowed != null){
+                if(!final[homepitcher]){
+                    final[homepitcher] = {"runsAllowed": homeRunsAllowed, "innings": 1, "runsAllowedPerInning": homeRunsAllowed};
+                } else {
+                    final[homepitcher].runsAllowed += homeRunsAllowed;
+                    final[homepitcher].innings += 1;
+                    final[homepitcher].runsAllowedPerInning = final[homepitcher].runsAllowed / final[homepitcher].innings;
+                }
+                if(!final[awaypitcher]){
+                    final[awaypitcher] = {"runsAllowed": awayRunsAllowed, "innings": 1, "runsAllowedPerInning": awayRunsAllowed};
+                } else {
+                    final[awaypitcher].runsAllowed += awayRunsAllowed;
+                    final[awaypitcher].innings += 1;
+                    final[awaypitcher].runsAllowedPerInning = final[awaypitcher].runsAllowed / final[awaypitcher].innings;
+                }
             }
         }
     } 
