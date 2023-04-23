@@ -11,7 +11,7 @@ for(let i = 0; i < gameDates.length; i++){
     games.push(gameDates[i].games);
 }
 games = Array.prototype.concat.apply([], games);
-for(let i = 100; i < games.length; i++){
+for(let i = 0; i < games.length; i++){
     if(!games.includes(games[i].gamePk)) {
         gamePKs.push(games[i].gamePk);
     }
