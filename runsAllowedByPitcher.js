@@ -1,5 +1,4 @@
 import axios from 'axios';
-import XLSX from 'xlsx';
 const CURRENT_DATE = new Date().toISOString().substring(0, 10);
 const START_DATE = '2023-03-29'
 const response =  await axios.get(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=${START_DATE}&endDate=${CURRENT_DATE}`);
@@ -73,21 +72,3 @@ for(let i = 0; i < gamePKs.length; i++){
     } 
 console.log(`${i} / ${gamePKs.length}`)
 }
-var pitcherRows = [];
-var teamRows = [];
-Object.keys(pitchersObject).forEach(key=>{
-    pitcherRows.push({ "Pitchers": key, "RunsAllowedPerInning": pitchersObject[key].runsAllowedPerInning, "Runs":  pitchersObject[key].runsAllowed, "Innings": pitchersObject[key].innings });
-})
-Object.keys(teamsObject).forEach(key=>{
-    teamRows.push({ "Team": key, "RunsAllowedPerInning": teamsObject[key].runsAllowedPerInning, "Runs":  teamsObject[key].runsAllowed, "Innings": teamsObject[key].innings });
-})
-let pitcherHeaders = ['Pitchers', 'RunsAllowedPerInning', 'Runs', 'Innings'];
-let teamHeaders = ['Team', 'RunsAllowedPerInning', 'Runs', 'Innings'];
-pitcherRows.sort((a,b) => a.RunsAllowedPerInning - b.RunsAllowedPerInning + (b.Innings - a.Innings) * .00001);
-teamRows.sort((a,b) => a.RunsAllowedPerInning - b.RunsAllowedPerInning + (b.Innings - a.Innings) * .00001);
-let wb = XLSX.utils.book_new();
-var ws1 = XLSX.utils.json_to_sheet(pitcherRows, {header: pitcherHeaders});
-XLSX.utils.book_append_sheet(wb, ws1);
-var ws2 = XLSX.utils.json_to_sheet(teamRows, {header: teamHeaders});
-XLSX.utils.book_append_sheet(wb, ws2);
-XLSX.writeFile(wb, `./runsAllowedInFirstInning_${CURRENT_DATE}.xlsx`);
