@@ -1,0 +1,14 @@
+{
+  "name": "readfroms3lambda",
+  "version": "1.0.0",
+  "description": "lambda connecting to apigateway to pull from s3 bucket",
+  "main": "readFromS3Bucket.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "TJ Thielen",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1368.0"
+  }
+}
