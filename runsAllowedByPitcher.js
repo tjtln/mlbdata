@@ -1,4 +1,5 @@
 import axios from 'axios';
+import aws from 'aws-sdk';
 
 export const handler = async(event) => {
     const CURRENT_DATE = new Date().toISOString().substring(0, 10);
@@ -72,11 +73,31 @@ export const handler = async(event) => {
                 }
             }
         } 
-        console.log(`${i}/${gamePKs}`);
+        console.log(`${i}/${gamePKs.length}`);
     }
+    pitchersObject = Object.fromEntries(
+        Object.entries(pitchersObject).sort(([, a], [, b]) => (a.runsAllowedPerInning - b.runsAllowedPerInning) - .001 * (a.innings - b.innings))
+    )
+    teamsObject = Object.fromEntries(
+        Object.entries(teamsObject).sort(([, a], [, b]) => (a.runsAllowedPerInning - b.runsAllowedPerInning) - .001 * (a.innings - b.innings))
+    )
     const returnObject = {
         statusCode: 200,
         body: {"Teams": teamsObject, "Pitchers": pitchersObject},
     };
+
+    const s3 = new aws.S3();
+    const params = {
+        Bucket:  "mlbdatabucket",
+        Key: "mlbDataForFirstInning.json",
+        Body: JSON.stringify(returnObject),
+    };
+    try {
+        const response = await s3.upload(params).promise();
+        console.log('Response: ', response);
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
     return returnObject;
 };
