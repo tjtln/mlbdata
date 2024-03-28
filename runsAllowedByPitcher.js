@@ -7,10 +7,10 @@ const teamsObject = data.Teams
 var pitcherRows = [];
 var teamRows = [];
 Object.keys(pitchersObject).forEach(key=>{
-    pitcherRows.push({ "Pitchers": key, "RunsAllowedPerInning": pitchersObject[key].runsAllowedPerInning, "Runs":  pitchersObject[key].runsAllowed, "Innings": pitchersObject[key].innings });
+    pitcherRows.push({ "Pitchers": key, "RunsAllowedPerInning": pitchersObject[key].runsAllowed/pitchersObject[key].innings, "Runs":  pitchersObject[key].runsAllowed, "Innings": pitchersObject[key].innings });
 })
 Object.keys(teamsObject).forEach(key=>{
-    teamRows.push({ "Team": key, "RunsAllowedPerInning": teamsObject[key].runsAllowedPerInning, "Runs":  teamsObject[key].runsAllowed, "Innings": teamsObject[key].innings });
+    teamRows.push({ "Team": key, "RunsAllowedPerInning": teamsObject[key].runsAllowed/teamsObject[key].innings, "Runs":  teamsObject[key].runsAllowed, "Innings": teamsObject[key].innings });
 })
 let pitcherHeaders = ['Pitchers', 'RunsAllowedPerInning', 'Runs', 'Innings'];
 let teamHeaders = ['Team', 'RunsAllowedPerInning', 'Runs', 'Innings'];
