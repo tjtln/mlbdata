@@ -88,11 +88,11 @@ const processBatch = async (gamePKs) => {
             console.error(`Error processing game PK ${gamePK}: `, error);
         }
     }));
-
+    console.log(`${batchSize} done`)
     return { 'teamsObject': teamsObject, 'pitchersObject': pitchersObject };
 };
 
-const batchSize = 10;
+const batchSize = 100;
 
 const gameBatches = [];
 for(let i = 0; i < gamePKs.length; i += batchSize) {
@@ -102,6 +102,7 @@ for(let i = 0; i < gamePKs.length; i += batchSize) {
 
 const processedGames = {"teamsObject": {}, "pitchersObject": {}};
 for (const batch of gameBatches) {
+    console.log("processing batch");
     const processedBatch = await processBatch(batch);
     
     // Merge teamsObject from processedBatch into processedGames.teamsObject
