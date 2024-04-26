@@ -1,7 +1,7 @@
 import axios from 'axios';
 import XLSX from 'xlsx';
-const CURRENT_DATE = '2023-11-03' //new Date().toISOString().substring(0, 10);
-const START_DATE = '2023-03-29'
+const CURRENT_DATE = new Date().toISOString().substring(0, 10);
+const START_DATE = '2024-01-29'
 // get array of game dates
 const response =  await axios.get(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&startDate=${START_DATE}&endDate=${CURRENT_DATE}`);
 const gameDates = response.data.dates;
